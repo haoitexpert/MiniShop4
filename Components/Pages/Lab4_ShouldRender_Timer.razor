@@ -1,0 +1,64 @@
+﻿@page "/lab4"
+@using System.Threading
+@implements IDisposable
+
+<PageTitle>Lab4 ShouldRender</PageTitle>
+
+<h3>Lab4 - ShouldRender + Timer</h3>
+
+<p>Count: @count</p>
+<p>AllowRender: @allowRender</p>
+
+<button class="btn btn-primary" @onclick="Start">Start Timer</button>
+<button class="btn btn-secondary" @onclick="Toggle">Toggle ShouldRender</button>
+<button class="btn btn-danger" @onclick="Stop">Stop</button>
+
+<ul>
+    @foreach (var x in log)
+    {
+        <li>@x</li>
+    }
+</ul>
+
+@code {
+    private int count = 5;
+    private bool allowRender = true;
+    private Timer? timer;
+    private readonly List<string> log = new();
+
+    void Start()
+    {
+        Stop();
+        count = 5;
+        log.Add("Start timer (mỗi giây -1)");
+
+        timer = new Timer(_ =>
+        {
+            if (count <= 0) return;
+            count--;
+            _ = InvokeAsync(StateHasChanged); // external event -> dispatch về context Blazor
+        }, null, 0, 1000);
+    }
+
+    void Toggle()
+    {
+        allowRender = !allowRender;
+        log.Add($"Toggle allowRender={allowRender}");
+        StateHasChanged();
+    }
+
+    void Stop()
+    {
+        timer?.Dispose();
+        timer = null;
+        log.Add("Stop timer");
+    }
+
+    protected override bool ShouldRender()
+    {
+        log.Add($"ShouldRender() => {allowRender}");
+        return allowRender;
+    }
+
+    public void Dispose() => Stop();
+}
