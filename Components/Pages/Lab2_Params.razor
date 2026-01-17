@@ -1,0 +1,15 @@
+﻿@page "/lab2"
+<PageTitle>Lab2 Params</PageTitle>
+
+<h3>Lab2 - OnParametersSet / OnParametersSetAsync</h3>
+
+<button class="btn btn-primary" @onclick="() => parentValue++">Parent +</button>
+<button class="btn btn-secondary" @onclick="() => parentValue--">Parent -</button>
+
+<p>ParentValue: @parentValue</p>
+
+<Lab2_Child Value="parentValue" />
+
+@code {
+    private int parentValue = 1;
+}

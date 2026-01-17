@@ -1,0 +1,29 @@
+﻿<h4>Child</h4>
+<p>Value nhận từ cha: @Value</p>
+<p>Computed (async): @computed</p>
+
+<ul>
+    @foreach (var x in log)
+    {
+        <li>@x</li>
+    }
+</ul>
+
+@code {
+    [Parameter] public int Value { get; set; }
+    private int computed;
+    private readonly List<string> log = new();
+
+    protected override void OnParametersSet()
+    {
+        log.Add($"OnParametersSet: nhận Value={Value} (xử lý nhanh)");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        log.Add("OnParametersSetAsync: giả bộ đi hỏi kho 200ms...");
+        await Task.Delay(200);
+        computed = Value * 10;
+        log.Add($"OnParametersSetAsync: computed={computed}");
+    }
+}
