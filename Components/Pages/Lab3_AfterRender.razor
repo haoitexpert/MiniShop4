@@ -1,0 +1,45 @@
+﻿@page "/lab3"
+<PageTitle>Lab3 AfterRender</PageTitle>
+
+<h3>Lab3 - OnAfterRender / OnAfterRenderAsync</h3>
+
+<p>Status: @status</p>
+<button class="btn btn-primary" @onclick="ReRender">Re-render</button>
+
+<ul>
+    @foreach (var x in log)
+    {
+        <li>@x</li>
+    }
+</ul>
+
+@code {
+    private string status = "Chưa render";
+    private int n;
+    private readonly List<string> log = new();
+
+    void ReRender()
+    {
+        n++;
+        status = $"Bấm {n}";
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        log.Add($"OnAfterRender(firstRender={firstRender})");
+        if (firstRender)
+        {
+            status = "Render lần đầu xong (set 1 lần thôi kẻo lặp)";
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        log.Add($"OnAfterRenderAsync(firstRender={firstRender})");
+        if (firstRender)
+        {
+            await Task.Delay(150);
+            log.Add("OnAfterRenderAsync: delay xong (giả bộ gắn JS/đo DOM)");
+        }
+    }
+}
