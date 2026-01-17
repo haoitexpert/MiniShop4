@@ -1,0 +1,41 @@
+﻿@page "/lab1"
+<PageTitle>Lab1 Init</PageTitle>
+
+<h3>Lab1 - OnInitialized / OnInitializedAsync</h3>
+
+<p>Data: @data</p>
+
+<button class="btn btn-primary" @onclick="() => click++">Click</button> 
+
+<br />
+<br />
+
+<p>Click: @click</p>
+<br />
+
+<ul>
+    @foreach (var x in log)
+    {
+        <li>@x</li>
+    }
+</ul>
+
+@code {
+    private string data = "Chưa có hàng";
+    private int click;
+    private readonly List<string> log = new();
+
+    protected override void OnInitialized()
+    {
+        log.Add("OnInitialized: mở sạp, set mặc định cái rụp");
+        data = "Hàng tạm (sync)";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        log.Add("OnInitializedAsync: đợi xe giao hàng 300ms...");
+        await Task.Delay(300);
+        data = "Hàng về rồi (async)";
+        log.Add("OnInitializedAsync: cập nhật data xong");
+    }
+}
